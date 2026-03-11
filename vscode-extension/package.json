@@ -1,0 +1,14 @@
+{
+  "name": "devtracker-vscode",
+  "displayName": "DevTracker",
+  "description": "Reports active file and real project path to DevTracker",
+  "version": "1.0.0",
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./extension.js",
+  "contributes": {},
+  "scripts": {
+    "package": "npx @vscode/vsce package --no-dependencies"
+  }
+}
