@@ -54,7 +54,7 @@ languages used, activity patterns, peak hours, and per-file time analysis.
 - 🔖 **Project bookmarks** — mark any folder as a project to unlock deep analytics
 - 🌐 **Browser tracking** — records which sites you visit, categorised automatically
 - 📈 **Language breakdown** — Python, JavaScript, TypeScript etc. with `█` bar charts (WakaTime-style)
-- 🕐 **Time patterns** — peak coding hours, best day, average per active day
+- 🕐 **Time patterns** — peak coding hours, best day, average per day
 - 🗑 **Delete entries** — remove unwanted or renamed folders from the database
 - 💾 **All data local** — stored in a single `devtracker.db` SQLite file you own completely
 
@@ -120,9 +120,30 @@ cd ..
 
 The extension gives DevTracker the real file path and project root — without it, tracking falls back to window title parsing which is less accurate.
 
+**Option A — Copy the folder directly (easiest, no tools needed)**
+
+Copy the `vscode-extension/` folder into your VS Code extensions directory and rename it to `devtracker-vscode`:
+
+macOS / Linux:
+```bash
+cp -r vscode-extension ~/.vscode/extensions/devtracker-vscode
+```
+
+Windows — paste this path into the File Explorer address bar and copy the folder there:
+```
+%USERPROFILE%\.vscode\extensions\devtracker-vscode\
+```
+
+Then **restart VS Code**. Done.
+
+---
+
+**Option B — Build and install a `.vsix` package**
+
 ```bash
 cd vscode-extension
-npx @vscode/vsce package --no-dependencies
+npm install -g @vscode/vsce
+vsce package --no-dependencies
 code --install-extension devtracker-vscode-1.0.0.vsix
 ```
 
@@ -203,9 +224,9 @@ This means:
 In the **📂 Files** tab, every detected folder has a **＋ Bookmark as Project** button. Clicking it adds the folder to the **🔖 Projects** tab where you get:
 
 - Total time invested (with 7d / 30d / 90d range selector)
-- Active days + average time per active day
+- Active days + average time per day
 - **Peak coding hours** (e.g. `8pm–11pm`)
-- **Daily activity** area chart
+- **Daily activity** bar chart
 - **Time of day** heatmap
 - **Best single day**
 - **This week — languages used** with `█` block bars
