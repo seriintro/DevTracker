@@ -41,14 +41,14 @@ hourly heatmap, app usage breakdown, and category distribution.
 
 📂 **Files**
 Displays every folder detected from VS Code, with file-level time tracking
-and a navigable project folder tree.
+
 
 <img width="900" height="904" alt="Screenshot 2026-03-11 233647" src="https://github.com/user-attachments/assets/bc8b6d6c-da65-446f-8ff9-fe60d6a42f91" />
 
 
 🔖 **Projects**
 Track your bookmarked projects with deeper analytics including
-languages used, activity patterns, peak hours, and per-file time analysis.
+languages used, activity patterns, peak hours, and per-file time analysis, and a navigable project folder tree.
 
 <img width="900" height="905" alt="Screenshot 2026-03-11 224159" src="https://github.com/user-attachments/assets/3078f05e-525a-49f6-9487-8fdfd86ef1e1" />
 <img width="900" height="914" alt="Screenshot 2026-03-11 224219" src="https://github.com/user-attachments/assets/dd8a8b07-3b18-45c8-93ba-a06d8e59cbcd" />
