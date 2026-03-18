@@ -71,10 +71,11 @@ languages used, activity patterns, peak hours, and per-file time analysis, and a
 - 📁 **Full folder tree** — see time spent per file with the actual `subfolder/file.ext` structure preserved
 - 🔖 **Project bookmarks** — mark any folder as a project to unlock deep analytics
 - 🌐 **Browser tracking** — records which sites you visit, categorised automatically
-- 📈 **Language breakdown** — Python, JavaScript, TypeScript etc. with `█` bar charts (WakaTime-style)
+- 📈 **Language breakdown** — Python, JavaScript, TypeScript etc. with `█` bar charts 
 - 🕐 **Time patterns** — peak coding hours, best day, average per day
 - 🗑 **Delete entries** — remove unwanted or renamed folders from the database
 - 💾 **All data local** — stored in a single `devtracker.db` SQLite file you own completely
+- 🖥️ One-command startup on Windows (run.bat), macOS, and Linux
 
 ---
 
