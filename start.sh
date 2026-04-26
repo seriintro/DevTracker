@@ -1,48 +1,98 @@
 #!/bin/bash
-# start.sh — starts tracker + API + dashboard in one command
-# Usage: bash start.sh
-# Stop: Ctrl+C  (kills all three)
-
 set -e
 
 echo ""
-echo "  🖥️  DevTracker"
-echo "  ──────────────────────────────────"
+echo "  =========================================="
+echo "   DevTracker - Starting up..."
+echo "  =========================================="
 echo ""
 
-# ── Tracker ──────────────────────────────────────────────────────────────────
-echo "  ▶  Tracker   → tracker/tracker.py"
-python3 tracker/tracker.py > tracker.log 2>&1 &
-TRACKER_PID=$!
-echo "     PID: $TRACKER_PID   (logs: tracker.log)"
+# Resolve script directory (like %~dp0)
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sleep 0.5
+# ── Check Python ─────────────────────────────────────────────
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "  [ERROR] Python3 not found."
+  exit 1
+fi
 
-# ── API ───────────────────────────────────────────────────────────────────────
-echo "  ▶  API       → http://localhost:5050"
-python3 tracker/api.py > api.log 2>&1 &
-API_PID=$!
-echo "     PID: $API_PID   (logs: api.log)"
+# ── Check Node ───────────────────────────────────────────────
+if ! command -v node >/dev/null 2>&1; then
+  echo "  [ERROR] Node.js not found."
+  exit 1
+fi
 
-sleep 0.5
-
-# ── Dashboard ─────────────────────────────────────────────────────────────────
-echo "  ▶  Dashboard → http://localhost:3000"
-cd dashboard && npm run dev > ../dashboard.log 2>&1 &
-DASH_PID=$!
-echo "     PID: $DASH_PID   (logs: dashboard.log)"
-
-echo ""
-echo "  ✅  All running.  Press Ctrl+C to stop everything."
+echo "  [OK] Python and Node.js found."
 echo ""
 
-# ── Cleanup on Ctrl+C ─────────────────────────────────────────────────────────
+# ── Install VS Code extension ────────────────────────────────
+EXT_SRC="$ROOT/vscode-extension"
+EXT_DST="$HOME/.vscode/extensions/devtracker-vscode"
+
+if [ ! -d "$EXT_DST" ]; then
+  echo "  [SETUP] Installing VS Code extension..."
+  mkdir -p "$EXT_DST"
+  cp -r "$EXT_SRC/"* "$EXT_DST/"
+  echo "  [OK] VS Code extension installed."
+else
+  cp -r "$EXT_SRC/"* "$EXT_DST/"
+  echo "  [OK] VS Code extension updated."
+fi
+
+echo ""
+
+# ── Install dashboard deps (first time only) ─────────────────
+if [ ! -d "$ROOT/dashboard/node_modules" ]; then
+  echo "  [SETUP] Installing dashboard packages..."
+  (cd "$ROOT/dashboard" && npm install --silent)
+  echo "  [OK] Dashboard packages installed."
+  echo ""
+fi
+
+# ── Start services ───────────────────────────────────────────
+echo "  [START] Tracker..."
+python3 "$ROOT/tracker/tracker.py" > "$ROOT/tracker.log" 2>&1 &
+
+echo "  [START] API..."
+python3 "$ROOT/tracker/api.py" > "$ROOT/api.log" 2>&1 &
+
+echo "  [START] Dashboard..."
+(cd "$ROOT/dashboard" && npm run dev > "$ROOT/dashboard.log" 2>&1 &) 
+
+echo ""
+echo "  [....] Waiting for dashboard to be ready..."
+
+# ── Wait for dashboard ───────────────────────────────────────
+until curl -s http://localhost:3000 >/dev/null; do
+  sleep 2
+done
+
+echo "  [OK] Dashboard is ready!"
+echo ""
+
+# ── Open browser ─────────────────────────────────────────────
+if command -v xdg-open >/dev/null; then
+  xdg-open http://localhost:3000
+elif command -v open >/dev/null; then
+  open http://localhost:3000
+fi
+
+echo "  =========================================="
+echo "   DevTracker is running!"
+echo ""
+echo "   Dashboard : http://localhost:3000"
+echo "   API       : http://localhost:5050"
+echo ""
+echo "   Press Ctrl+C to stop."
+echo "  =========================================="
+echo ""
+
+# ── Cleanup ─────────────────────────────────────────────────
 cleanup() {
   echo ""
-  echo "  ⏹  Stopping all processes..."
-  kill $TRACKER_PID $API_PID $DASH_PID 2>/dev/null
-  wait $TRACKER_PID $API_PID $DASH_PID 2>/dev/null
-  echo "  ✓  All stopped. Data saved to devtracker.db"
+  echo "  Stopping DevTracker..."
+  kill -- -$$ 2>/dev/null
+  echo "  Stopped. Data saved in devtracker.db"
   exit 0
 }
 
